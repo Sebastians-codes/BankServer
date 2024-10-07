@@ -8,7 +8,7 @@ public class PgSqlRepo
 
     public Customer? GetAccount(LoginCredentials customer)
     {
-        string queryCommand = "SELECT first_name, last_name, country.name, city.name, " +
+        string queryCommand = "SELECT first_name, last_name, country.name as country, city.name as city, " +
                               "street, email, ssn, pin FROM customer " +
                               "INNER JOIN country on customer.country_id = country.id " +
                               "INNER JOIN city on customer.city_id = city.id " +
@@ -27,8 +27,8 @@ public class PgSqlRepo
             string firstName = reader.GetString(reader.GetOrdinal("first_name"));
             string lastName = reader.GetString(reader.GetOrdinal("last_name"));
             string email = reader.GetString(reader.GetOrdinal("email"));
-            string country = reader.GetString(reader.GetOrdinal("country.name"));
-            string city = reader.GetString(reader.GetOrdinal("city.name"));
+            string country = reader.GetString(reader.GetOrdinal("country"));
+            string city = reader.GetString(reader.GetOrdinal("city"));
             string street = reader.GetString(reader.GetOrdinal("street"));
             string ssn = reader.GetString(reader.GetOrdinal("ssn"));
             string pin = reader.GetString(reader.GetOrdinal("pin"));
@@ -91,5 +91,49 @@ public class PgSqlRepo
 
         connection.Open();
         command.ExecuteNonQuery();
+    }
+
+    public List<Country> GetCountries()
+    {
+        List<Country> countries = [];
+        using NpgsqlConnection connection = new(_connectionString);
+        using NpgsqlCommand command = new("SELECT id, name, code FROM country;", connection);
+
+        connection.Open();
+
+        NpgsqlDataReader reader = command.ExecuteReader();
+
+        while (reader.Read())
+        {
+            int id = reader.GetInt32(reader.GetOrdinal("id"));
+            string name = reader.GetString(reader.GetOrdinal("name"));
+            int code = reader.GetInt32(reader.GetOrdinal("code"));
+
+            countries.Add(new(id, name, code));
+        }
+
+        return countries;
+    }
+
+    public List<City> GetCities(int countryCode)
+    {
+        List<City> cities = [];
+        using NpgsqlConnection connection = new(_connectionString);
+        using NpgsqlCommand command = new("SELECT id, name FROM city " +
+                                          $"WHERE country_code = '{countryCode}';", connection);
+
+        connection.Open();
+
+        NpgsqlDataReader reader = command.ExecuteReader();
+
+        while (reader.Read())
+        {
+            int id = reader.GetInt32(reader.GetOrdinal("id"));
+            string name = reader.GetString(reader.GetOrdinal("name"));
+
+            cities.Add(new(id, name));
+        }
+
+        return cities;
     }
 }

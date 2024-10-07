@@ -9,7 +9,8 @@ public enum MessageType : byte
     Command = 3,
     Err = 4,
     Ok = 5,
-    Text = 6
+    Country = 6,
+    City = 7
 }
 
 public enum CommandType : byte
@@ -146,3 +147,4 @@ public static class Protocol
         return sb.ToString();
     }
 }
+

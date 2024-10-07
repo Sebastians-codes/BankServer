@@ -104,10 +104,11 @@ public class Server(string serverIp, int port, string secretPassword) : IDisposa
     {
         (MessageType Type, string Text) response = type switch
         {
-            MessageType.Text => (MessageType.Text, $"DEBUG TESTER {content}"),
             MessageType.Login => Login.Validate(content),
             MessageType.CreateLogin => Login.CreateAccount(content),
-            _ => (MessageType.Text, $"Unhandled MessageType: {type}")
+            MessageType.Country => Data.GetCountries(),
+            MessageType.City => Data.GetCities(int.Parse(content)),
+            _ => (MessageType.Err, $"Unhandled MessageType: {type}")
         };
 
         byte[] responseMessage = Protocol.CreateMessage(response.Type, _secretPassword, response.Text);

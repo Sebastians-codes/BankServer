@@ -1,11 +1,11 @@
-namespace TcpServer;
+namespace TcpClientServer;
 
-public class Customer(
+public class CreateCustomer(
     string firstName,
     string lastName,
     string email,
-    string country,
-    string city,
+    int countryId,
+    int cityId,
     string street,
     string ssn,
     string pin
@@ -14,8 +14,8 @@ public class Customer(
     public string FirstName { get; init; } = firstName;
     public string LastName { get; init; } = lastName;
     public string Email { get; init; } = email;
-    public string Country { get; init; } = country;
-    public string City { get; init; } = city;
+    public int CountryId { get; init; } = countryId;
+    public int CityId { get; init; } = cityId;
     public string Street { get; init; } = street;
     public string Ssn { get; init; } = ssn;
     public string Pin { get; init; } = pin;

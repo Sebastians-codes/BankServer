@@ -1,6 +1,6 @@
 namespace TcpClientServer;
 
-public struct Customer(
+public class Customer(
     string firstName,
     string lastName,
     string email,
@@ -19,4 +19,7 @@ public struct Customer(
     public string Street { get; init; } = street;
     public string Ssn { get; init; } = ssn;
     public string Pin { get; init; } = pin;
+
+    public override string ToString() =>
+        $"{FirstName}, {LastName}, {Email}, {Country}, {City}, {Street}, {Ssn}, {Pin}";
 }
