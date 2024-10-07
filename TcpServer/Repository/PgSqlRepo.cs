@@ -4,9 +4,9 @@ namespace TcpServer;
 
 public class PgSqlRepo
 {
-    private readonly string _connectionString = "Server=localhost;Port=5432;Database=tcptest;Username=zerq;Password=Testar1234";
+    private readonly string _connectionString = "Server=localhost;Port=5432;Database=bank;Username=zerq;Password=Testar1234";
 
-    public Customer? GetAccount(Customer customer)
+    public Customer? GetAccount(LoginCredentials customer)
     {
         string queryCommand = "SELECT first_name, last_name, country.name, city.name, " +
                               "street, email, ssn, pin FROM customer " +
@@ -39,11 +39,11 @@ public class PgSqlRepo
         return null;
     }
 
-    public bool CustomerExist(Customer customer)
+    public bool CustomerExist(CreateCustomer customer)
     {
         using NpgsqlConnection connection = new(_connectionString);
-        using NpgsqlCommand command = new("select count(*) from account " +
-                                          $"where ssn = '{customer.Ssn}';", connection);
+        using NpgsqlCommand command = new("SELECT COUNT(*) FROM customer " +
+                                          $"WHERE ssn = '{customer.Ssn}';", connection);
 
         connection.Open();
 
@@ -57,9 +57,9 @@ public class PgSqlRepo
         return false;
     }
 
-    public void InsertCustomer(Customer customer)
+    public void InsertCustomer(CreateCustomer customer)
     {
-        string queryCommand = "INSERT INTO account(first_name, last_name, " +
+        string queryCommand = "INSERT INTO customer(first_name, last_name, " +
                               "ssn, email, country_id, city_id, street, pin) " +
                               "VALUES (@first_name, @last_name, @ssn, @email, " +
                               "@country_id, @city_id, @street, @pin);";

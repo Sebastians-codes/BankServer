@@ -9,7 +9,7 @@ public static class Login
 
     public static (MessageType Type, string Message) Validate(string content)
     {
-        Customer? customer = _repo.GetAccount(JsonSerializer.Deserialize<Customer>(content));
+        Customer? customer = _repo.GetAccount(JsonSerializer.Deserialize<LoginCredentials>(content));
 
         if (customer == null)
         {
@@ -21,7 +21,7 @@ public static class Login
 
     public static (MessageType Type, string Message) CreateAccount(string content)
     {
-        var customer = JsonSerializer.Deserialize<Customer>(content);
+        var customer = JsonSerializer.Deserialize<CreateCustomer>(content);
 
         if (_repo.CustomerExist(customer))
         {
