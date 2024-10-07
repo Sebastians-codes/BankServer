@@ -1,6 +1,6 @@
 using System.Net;
 using System.Net.Sockets;
-using TcpProtocl;
+using TcpProtocol;
 using TcpServer;
 
 public class Server(string serverIp, int port, string secretPassword) : IDisposable

@@ -1,7 +1,7 @@
 using System.Net.Sockets;
-using TcpProtocl;
+using TcpProtocol;
 
-namespace Client1.Server;
+namespace TcpClientServer.Server;
 
 public class ClientServer(string serverIp, int port, string secretPassword) : IDisposable
 {

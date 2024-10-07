@@ -1,5 +1,5 @@
 using System.Text.Json;
-using TcpProtocl;
+using TcpProtocol;
 
 namespace TcpServer;
 
@@ -7,20 +7,28 @@ public static class Login
 {
     private static readonly PgSqlRepo _repo = new();
 
-    public static (MessageType Type, string Message) Validate(string content) =>
-        _repo.GetAccount(JsonSerializer.Deserialize<Account>(content)) != null ?
-        (MessageType.Ok, "Logged In") : (MessageType.Err, "Invalid Credentials");
+    public static (MessageType Type, string Message) Validate(string content)
+    {
+        Customer? customer = _repo.GetAccount(JsonSerializer.Deserialize<Customer>(content));
+
+        if (customer == null)
+        {
+            return (MessageType.Err, "Invalid Credentials");
+        }
+
+        return (MessageType.Ok, JsonSerializer.Serialize(customer));
+    }
 
     public static (MessageType Type, string Message) CreateAccount(string content)
     {
-        var account = JsonSerializer.Deserialize<Account>(content);
+        var customer = JsonSerializer.Deserialize<Customer>(content);
 
-        if (_repo.AccountExist(account))
+        if (_repo.CustomerExist(customer))
         {
             return (MessageType.Err, "Cannot create an account with this number");
         }
 
-        _repo.InsertAccount(account);
+        _repo.InsertCustomer(customer);
 
         return (MessageType.Ok, "Account created");
     }

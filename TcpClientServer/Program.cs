@@ -1,12 +1,12 @@
-﻿using Client1.Server;
-using TcpProtocl;
-using Client1;
+﻿using TcpProtocol;
 using System.Text.Json;
+using TcpClientServer;
+using TcpClientServer.Server;
 
 ClientServer server = new("127.0.0.1", 7120, "BIGFUCKINGSECRET!");
 
 bool loggedIn = false;
-var loggedInAccount = new Account[1];
+var loggedInCustomer = new Customer[1];
 
 try
 {
@@ -19,14 +19,14 @@ try
             string choice = Console.ReadLine();
             string ssn = Console.ReadLine();
             string pin = Console.ReadLine();
-            Account account = new Account(ssn, pin);
+            LoginCredentials customer = new(ssn, pin);
             MessageType type = choice switch
             {
                 "1" => MessageType.Login,
                 "2" => MessageType.CreateLogin
             };
 
-            (object Type, string Response) = server.SendMessage(type, JsonSerializer.Serialize(account));
+            (object Type, string Response) = server.SendMessage(type, JsonSerializer.Serialize(customer));
 
             if (type == MessageType.Login)
             {
@@ -34,7 +34,7 @@ try
                 {
                     case MessageType.Ok:
                         loggedIn = true;
-                        loggedInAccount[0] = account;
+                        loggedInCustomer[0] = JsonSerializer.Deserialize<Customer>(Response);
                         break;
                     case MessageType.Err:
                         Console.WriteLine("Invalid Credentials");
@@ -59,9 +59,6 @@ try
         {
             Console.Write("Enter amount to deposit -> ");
             string amount = Console.ReadLine();
-            Transaction transaction = new(loggedInAccount[0], amount);
-
-            (object Type, string Response) = server.SendMessage(MessageType.Command, JsonSerializer.Serialize(transaction), CommandType.Transaction);
         }
     }
 }

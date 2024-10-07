@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace TcpProtocl;
+namespace TcpProtocol;
 
 public enum MessageType : byte
 {

@@ -1,5 +1,5 @@
 using System.Text.Json;
-using TcpProtocl;
+using TcpProtocol;
 
 namespace TcpServer;
 
