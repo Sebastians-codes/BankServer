@@ -106,8 +106,7 @@ public class Server(string serverIp, int port, string secretPassword) : IDisposa
         {
             MessageType.Login => Login.Validate(content),
             MessageType.CreateLogin => Login.CreateAccount(content),
-            MessageType.Country => Data.GetCountries(),
-            MessageType.City => Data.GetCities(int.Parse(content)),
+            MessageType.Data => Data.Get(content),
             _ => (MessageType.Err, $"Unhandled MessageType: {type}")
         };
 

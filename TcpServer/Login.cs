@@ -21,7 +21,7 @@ public static class Login
 
     public static (MessageType Type, string Message) CreateAccount(string content)
     {
-        var customer = JsonSerializer.Deserialize<CreateCustomer>(content);
+        var customer = JsonSerializer.Deserialize<DbCustomer>(content);
 
         if (_repo.CustomerExist(customer))
         {

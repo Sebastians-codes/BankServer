@@ -33,13 +33,13 @@ public class PgSqlRepo
             string ssn = reader.GetString(reader.GetOrdinal("ssn"));
             string pin = reader.GetString(reader.GetOrdinal("pin"));
 
-            return new Customer(firstName, lastName, email, country, city, street, ssn, pin);
+            return new Customer(firstName, lastName, email, street, ssn, pin, country, city);
         }
 
         return null;
     }
 
-    public bool CustomerExist(CreateCustomer customer)
+    public bool CustomerExist(DbCustomer customer)
     {
         using NpgsqlConnection connection = new(_connectionString);
         using NpgsqlCommand command = new("SELECT COUNT(*) FROM customer " +
@@ -57,7 +57,7 @@ public class PgSqlRepo
         return false;
     }
 
-    public void InsertCustomer(CreateCustomer customer)
+    public void InsertCustomer(DbCustomer customer)
     {
         string queryCommand = "INSERT INTO customer(first_name, last_name, " +
                               "ssn, email, country_id, city_id, street, pin) " +
