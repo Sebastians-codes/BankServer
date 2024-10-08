@@ -7,8 +7,8 @@ ClientServer server = new("127.0.0.1", 7120, "BIGFUCKINGSECRET!");
 IUserInterface userInterface = new ConsoleUserInterface();
 IUserInteraction userInteraction = new ConsoleUserInteraction();
 LoginMenu loginMenu = new(userInterface, userInteraction);
-Ssn ssn = new(userInterface, userInteraction);
-Pin pin = new(userInterface, userInteraction);
+Input input = new(userInterface, userInteraction);
+CustomerFactory customerFactory = new(input, server);
 
 bool loggedIn = false;
 var loggedInCustomer = new Customer[1];
@@ -22,12 +22,12 @@ try
         {
             MessageType type = loginMenu.Show();
 
-            string ssN = ssn.Get();
-            string piN = pin.Get();
-
             if (type == MessageType.Login)
             {
-                LoginCredentials customer = new(ssN, piN);
+                string ssn = input.GetSsn();
+                string pin = input.GetPin();
+
+                LoginCredentials customer = new(ssn, pin);
                 (object Type, string Response) = server.SendMessage(type, JsonSerializer.Serialize(customer));
 
                 switch (Type)
@@ -44,21 +44,8 @@ try
             }
             else if (type == MessageType.CreateLogin)
             {
-                Console.Write("firstName -> ");
-                string firstName = Console.ReadLine();
-                Console.Write("lastName -> ");
-                string lastName = Console.ReadLine();
-                Console.Write("email -> ");
-                string email = Console.ReadLine();
-                List<Country> countries = JsonSerializer.Deserialize<List<Country>>(server.SendMessage(MessageType.Data, "country").Content)!;
-                int country = 164;
-                int city = 331;
-                Console.Write("street -> ");
-                string street = Console.ReadLine();
-
-                DbCustomer newCustomer = new(firstName, lastName, email, street, ssN, piN, country, city);
-
-                (object Type, string Response) = server.SendMessage(type, JsonSerializer.Serialize(newCustomer));
+                (object Type, string Response) =
+                    server.SendMessage(type, JsonSerializer.Serialize(customerFactory.Make()));
 
                 switch (Type)
                 {
