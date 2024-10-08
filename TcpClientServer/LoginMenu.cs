@@ -1,14 +1,61 @@
+using System.Text.Json;
+using TcpClientServer.Server;
 using TcpProtocol;
 
 namespace TcpClientServer;
 
-public class LoginMenu(IUserInterface userInterface, IUserInteraction userInteraction)
+public class LoginMenu(
+    IUserInterface userInterface,
+    IUserInteraction userInteraction,
+    Input input,
+    CustomerFactory customerFactory,
+    ClientServer server
+)
 {
-    private readonly IUserInterface _userInterface = userInterface;
-    private readonly IUserInteraction _userInteraction = userInteraction;
-    private readonly string[] _menuOptions = ["1 -> Log In", "2 -> Create Account", "3 -> Exit", "Your choice -> "];
+    private readonly string[] _menuOptions =
+        ["1 -> Log In", "2 -> Create Account", "3 -> Exit", "Your choice -> "];
 
-    public MessageType Show()
+    public Customer? Show()
+    {
+        MessageType type = ShowMenu();
+
+        if (type == MessageType.Login)
+        {
+            string ssn = input.GetSsn();
+            string pin = input.GetPin();
+
+            LoginCredentials customer = new(ssn, pin);
+            (object Type, string Response) = server.SendMessage(type, JsonSerializer.Serialize(customer));
+
+            switch (Type)
+            {
+                case MessageType.Ok:
+                    return JsonSerializer.Deserialize<Customer>(Response)!;
+                case MessageType.Err:
+                    Console.WriteLine("Invalid Credentials");
+                    break;
+            }
+        }
+        else if (type == MessageType.CreateLogin)
+        {
+            (object Type, string Response) =
+                server.SendMessage(type, JsonSerializer.Serialize(customerFactory.Make()));
+
+            switch (Type)
+            {
+                case MessageType.Ok:
+                    Console.WriteLine("Account created");
+                    break;
+                case MessageType.Err:
+                    Console.WriteLine("Account not created");
+                    break;
+            }
+        }
+
+        return null;
+    }
+
+    private MessageType ShowMenu()
     {
         switch (GetMenuChoice())
         {
@@ -27,17 +74,17 @@ public class LoginMenu(IUserInterface userInterface, IUserInteraction userIntera
 
     private int GetMenuChoice()
     {
-        _userInterface.Write(MenuOptions());
+        userInterface.Write(MenuOptions());
         do
         {
-            (bool valid, int choice) = ValidateInput(_userInteraction.ReadLine());
+            (bool valid, int choice) = ValidateInput(userInteraction.ReadLine());
             if (valid)
             {
                 return choice;
             }
 
-            _userInterface.Clear();
-            _userInterface.Write(
+            userInterface.Clear();
+            userInterface.Write(
                 "Invalid option you options are\n" + string.Join(Environment.NewLine, _menuOptions)
             );
 

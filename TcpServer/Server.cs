@@ -117,14 +117,14 @@ public class Server(string serverIp, int port, string secretPassword) : IDisposa
 
     private void HandleCommandType(CommandType type, string content, NetworkStream stream)
     {
-        (MessageType Type, string Text) response = type switch
-        {
-            CommandType.Transaction => AccountCommands.MakeTransaction(content)
-        };
+        // (MessageType Type, string Text) response = type switch
+        // {
+        //     CommandType.Transaction => AccountCommands.MakeTransaction(content)
+        // };
 
-        byte[] commandMessage = Protocol.CreateMessage(response.Type, _secretPassword, response.Text);
-        stream.Write(commandMessage, 0, commandMessage.Length);
-        Console.WriteLine($"Sent Response: {response.Text}");
+        // byte[] commandMessage = Protocol.CreateMessage(response.Type, _secretPassword, response.Text);
+        // stream.Write(commandMessage, 0, commandMessage.Length);
+        // Console.WriteLine($"Sent Response: {response.Text}");
     }
 
     public void Stop()
