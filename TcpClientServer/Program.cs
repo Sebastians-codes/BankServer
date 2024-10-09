@@ -5,8 +5,7 @@ ClientServer server = new("127.0.0.1", 7120, "BIGFUCKINGSECRET!");
 IUserInterface userInterface = new ConsoleUserInterface();
 IUserInteraction userInteraction = new ConsoleUserInteraction();
 Input input = new(userInterface, userInteraction);
-CustomerFactory customerFactory = new(input, server);
-LoginMenu loginMenu = new(userInterface, userInteraction, input, customerFactory, server);
+LoginMenu loginMenu = new(userInterface, userInteraction, input, server);
 
 bool loggedIn = false;
 Customer? loggedInCustomer;

@@ -8,10 +8,10 @@ public class LoginMenu(
     IUserInterface userInterface,
     IUserInteraction userInteraction,
     Input input,
-    CustomerFactory customerFactory,
     ClientServer server
 )
 {
+    private readonly CustomerFactory _customerFactory = new(input, server);
     private readonly string[] _menuOptions =
         ["1 -> Log In", "2 -> Create Account", "3 -> Exit", "Your choice -> "];
 
@@ -39,7 +39,7 @@ public class LoginMenu(
         else if (type == MessageType.CreateLogin)
         {
             (object Type, string Response) =
-                server.SendMessage(type, JsonSerializer.Serialize(customerFactory.Make()));
+                server.SendMessage(type, JsonSerializer.Serialize(_customerFactory.Make()));
 
             switch (Type)
             {
